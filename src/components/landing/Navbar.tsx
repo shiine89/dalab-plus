@@ -51,10 +51,10 @@ const Navbar = () => {
         </div>
 
         <div className="flex md:hidden items-center gap-2">
-          <button onClick={() => setLang(lang === "en" ? "so" : "en")} className="p-2 text-foreground">
+          <button onClick={() => setLang(lang === "en" ? "so" : "en")} className="p-2 text-primary-foreground hover:text-accent transition-colors">
             <Globe className="w-4 h-4" />
           </button>
-          <button className="text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="text-primary-foreground hover:text-accent transition-colors" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>

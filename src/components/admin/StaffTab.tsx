@@ -211,7 +211,7 @@ const StaffTab = ({ businessId }: StaffTabProps) => {
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div className="grid grid-cols-2 gap-3">
               <div><label className="text-sm font-medium mb-1 block">Full Name *</label>
-                <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Ahmed Ali" /></div>
+                <Input validate="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Ahmed Ali" /></div>
               <div><label className="text-sm font-medium mb-1 block">Phone *</label>
                 <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 0612345678" /></div>
             </div>

@@ -407,7 +407,7 @@ const NewBusinessModal = ({ open, onClose, onCreated, editBusiness }: NewBusines
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs text-muted-foreground">City *</Label>
-                  <Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Mogadishu" required />
+                  <Input validate="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Mogadishu" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs text-muted-foreground">Address *</Label>

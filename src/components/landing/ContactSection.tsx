@@ -106,7 +106,7 @@ const ContactSection = () => {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              <Input placeholder={t.yourName} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="h-12" />
+              <Input validate="text" placeholder={t.yourName} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="h-12" />
               <Input type="email" placeholder={t.yourEmail} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required className="h-12" />
               <Textarea placeholder={t.yourMessage} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required rows={5} />
               <Button variant="hero" size="lg" type="submit" className="w-full group">

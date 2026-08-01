@@ -67,7 +67,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden glass border-t border-border px-4 pb-4 space-y-3 overflow-hidden"
+            className="md:hidden glass bg-primary/95 border-t border-accent/20 px-4 pb-4 space-y-3 overflow-hidden"
           >
             {links.map((l, i) => (
               <motion.a
@@ -76,7 +76,7 @@ const Navbar = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="block text-sm font-medium text-muted-foreground hover:text-foreground py-2"
+                className="block text-sm font-medium text-primary-foreground hover:text-accent transition-colors py-2"
                 onClick={() => setMobileOpen(false)}
               >
                 {l.label}

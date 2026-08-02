@@ -718,7 +718,7 @@ const BusinessHome = () => {
               <div className="p-6 rounded-2xl bg-[hsl(30,20%,97%)] border border-border/50">
                 <h3 className="font-display font-bold text-lg text-foreground mb-5">{l({ en: "Send Us a Message", so: "Fariin Noo Dir" })}</h3>
                 <div className="space-y-3">
-                  <Input placeholder={l({ en: "Your Name", so: "Magacaaga" })} className="rounded-xl bg-white" />
+                  <Input validate="text" placeholder={l({ en: "Your Name", so: "Magacaaga" })} className="rounded-xl bg-white" />
                   <Input placeholder={l({ en: "Your Email", so: "Email-kaaga" })} type="email" className="rounded-xl bg-white" />
                   <Textarea placeholder={l({ en: "Your Message...", so: "Fariintaada..." })} className="rounded-xl bg-white min-h-[100px]" />
                   <Button className="w-full bg-foreground hover:bg-foreground/90 text-background rounded-xl font-bold gap-2">

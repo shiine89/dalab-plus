@@ -451,8 +451,8 @@ const LoyaltyTab = ({ businessId }: LoyaltyTabProps) => {
             <DialogDescription>Enter member details</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div><label className="text-sm font-medium mb-1 block">Name</label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
-            <div><label className="text-sm font-medium mb-1 block">Phone</label><Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} /></div>
+            <div><label className="text-sm font-medium mb-1 block">Name</label><Input validate="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+            <div><label className="text-sm font-medium mb-1 block">Phone</label><Input type="tel" inputMode="numeric" maxLength={10} value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} /></div>
             <div><label className="text-sm font-medium mb-1 block">Points</label><Input type="number" value={form.points} onChange={e => setForm(f => ({ ...f, points: e.target.value }))} /></div>
           </div>
           <DialogFooter>

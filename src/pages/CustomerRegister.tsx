@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Phone, CheckCircle, UtensilsCrossed, Hotel, Coffee, Sparkles, Star, Shield, ArrowRight } from "lucide-react";
+import { User, Phone, CheckCircle, UtensilsCrossed, Hotel, Coffee, Sparkles, Star, Shield, ArrowRight, KeyRound } from "lucide-react";
 import { getBusinessById, Business, saveCustomer, getCustomers, generateId, getDefaultServices, BusinessService } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -31,6 +31,9 @@ const CustomerRegister = () => {
   const [business, setBusiness] = useState<Business | null>(null);
   const [customerShortId, setCustomerShortId] = useState<string>("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [mode, setMode] = useState<"register" | "login">("register");
+  const [idInput, setIdInput] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -70,6 +73,52 @@ const CustomerRegister = () => {
 
   // Bilingual helpers
   const l = (so: string, en: string) => lang === "so" ? so : en;
+
+  const handleIdLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const shortId = parseInt(idInput, 10);
+    if (!shortId) return;
+    setIsSubmitting(true);
+    setLoginError("");
+
+    const { data } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("business_id", businessId)
+      .eq("short_id", shortId)
+      .maybeSingle();
+
+    setIsSubmitting(false);
+
+    if (!data) {
+      setLoginError(l("ID-gan lama helin. Fadlan hubi ama iska diiwaan geli.", "This ID was not found. Please check it or register."));
+      return;
+    }
+
+    const points = data.loyalty_points || 0;
+    const customer = {
+      id: data.id,
+      name: data.name,
+      phone: data.phone || "",
+      tableId,
+      businessId,
+      businessName,
+      businessLogo,
+      points,
+      level: points >= 600 ? "Platinum" : points >= 300 ? "Gold" : points >= 100 ? "Silver" : "Bronze",
+      totalOrders: data.total_orders || 0,
+      totalSpent: Number(data.total_spent) || 0,
+      shortId: data.short_id,
+      registeredAt: data.registered_at || new Date().toISOString(),
+    };
+
+    localStorage.setItem("dp_customer", JSON.stringify(customer));
+    localStorage.setItem("dp_customer_branding", JSON.stringify({ businessId, businessName, businessLogo }));
+    setFormData({ name: data.name, phone: data.phone || "" });
+    setCustomerShortId(String(data.short_id));
+    setShowSuccess(true);
+    setTimeout(() => navigate(`/menu?table=${tableId}&business=${businessId}`), 1600);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,6 +350,33 @@ const CustomerRegister = () => {
               </div>
             </motion.div>
 
+            {mode === "login" ? (
+              <form onSubmit={handleIdLogin} className="space-y-5">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-2">
+                  <Label className="text-primary-foreground/70 text-xs font-medium flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5 text-accent" /> {l("ID Number-kaaga", "Your ID Number")}
+                  </Label>
+                  <Input
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder="e.g. 00101"
+                    value={idInput}
+                    onChange={e => { setIdInput(e.target.value.replace(/\D/g, "").slice(0, 8)); setLoginError(""); }}
+                    className="bg-primary/30 border-primary/40 text-primary-foreground placeholder:text-primary-foreground/30 focus:border-accent focus:ring-accent/20 rounded-xl h-12 text-sm font-mono tracking-widest text-center"
+                    required
+                  />
+                  {loginError && <p className="text-[11px] text-destructive">{loginError}</p>}
+                </motion.div>
+
+                <Button type="submit" variant="hero" size="xl" className="w-full rounded-xl gap-2 text-sm" disabled={isSubmitting || !idInput}>
+                  {isSubmitting ? l("Hubinaya...", "Checking...") : <>{l("Gal", "Continue")} <ArrowRight className="w-4 h-4" /></>}
+                </Button>
+
+                <button type="button" onClick={() => { setMode("register"); setLoginError(""); }} className="w-full text-[11px] text-primary-foreground/50 hover:text-accent transition-colors">
+                  {l("Ma cusub tahay? Iska diiwaan geli", "New here? Register instead")}
+                </button>
+              </form>
+            ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Name Field */}
               <motion.div
@@ -372,6 +448,7 @@ const CustomerRegister = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 }}
+                className="space-y-3"
               >
                 <Button
                   type="submit"
@@ -390,9 +467,22 @@ const CustomerRegister = () => {
                     </>
                   )}
                 </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => { setMode("login"); setLoginError(""); }}
+                  className="w-full rounded-xl gap-2 text-xs bg-primary/20 border-accent/30 text-primary-foreground hover:bg-accent/10 hover:text-accent"
+                >
+                  <KeyRound className="w-4 h-4" /> {l("Horey ayaan isu diiwaan geliyay — ID Number gali", "I already have an ID Number")}
+                </Button>
               </motion.div>
             </form>
+            )}
           </motion.div>
+
+
 
           {/* Footer info */}
           {business && (

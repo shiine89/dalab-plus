@@ -301,6 +301,33 @@ const CustomerRegister = () => {
               </div>
             </motion.div>
 
+            {mode === "login" ? (
+              <form onSubmit={handleIdLogin} className="space-y-5">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-2">
+                  <Label className="text-primary-foreground/70 text-xs font-medium flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5 text-accent" /> {l("ID Number-kaaga", "Your ID Number")}
+                  </Label>
+                  <Input
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder="e.g. 00101"
+                    value={idInput}
+                    onChange={e => { setIdInput(e.target.value.replace(/\D/g, "").slice(0, 8)); setLoginError(""); }}
+                    className="bg-primary/30 border-primary/40 text-primary-foreground placeholder:text-primary-foreground/30 focus:border-accent focus:ring-accent/20 rounded-xl h-12 text-sm font-mono tracking-widest text-center"
+                    required
+                  />
+                  {loginError && <p className="text-[11px] text-destructive">{loginError}</p>}
+                </motion.div>
+
+                <Button type="submit" variant="hero" size="xl" className="w-full rounded-xl gap-2 text-sm" disabled={isSubmitting || !idInput}>
+                  {isSubmitting ? l("Hubinaya...", "Checking...") : <>{l("Gal", "Continue")} <ArrowRight className="w-4 h-4" /></>}
+                </Button>
+
+                <button type="button" onClick={() => { setMode("register"); setLoginError(""); }} className="w-full text-[11px] text-primary-foreground/50 hover:text-accent transition-colors">
+                  {l("Ma cusub tahay? Iska diiwaan geli", "New here? Register instead")}
+                </button>
+              </form>
+            ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Name Field */}
               <motion.div
@@ -372,6 +399,7 @@ const CustomerRegister = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 }}
+                className="space-y-3"
               >
                 <Button
                   type="submit"
@@ -390,9 +418,20 @@ const CustomerRegister = () => {
                     </>
                   )}
                 </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => { setMode("login"); setLoginError(""); }}
+                  className="w-full rounded-xl gap-2 text-xs bg-primary/20 border-accent/30 text-primary-foreground hover:bg-accent/10 hover:text-accent"
+                >
+                  <KeyRound className="w-4 h-4" /> {l("Horey ayaan isu diiwaan geliyay — ID Number gali", "I already have an ID Number")}
+                </Button>
               </motion.div>
             </form>
-          </motion.div>
+            )}
+
 
           {/* Footer info */}
           {business && (

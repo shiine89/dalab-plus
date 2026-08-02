@@ -390,6 +390,7 @@ const CustomerRegister = () => {
                 </Label>
                 <div className={`relative transition-all duration-300 ${focusedField === "name" ? "scale-[1.02]" : ""}`}>
                   <Input
+                    validate="text"
                     placeholder="e.g. Ahmed Mohamed"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}

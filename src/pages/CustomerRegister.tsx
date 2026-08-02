@@ -431,6 +431,8 @@ const CustomerRegister = () => {
               </motion.div>
             </form>
             )}
+          </motion.div>
+
 
 
           {/* Footer info */}

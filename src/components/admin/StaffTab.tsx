@@ -213,10 +213,10 @@ const StaffTab = ({ businessId }: StaffTabProps) => {
               <div><label className="text-sm font-medium mb-1 block">Full Name *</label>
                 <Input validate="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Ahmed Ali" /></div>
               <div><label className="text-sm font-medium mb-1 block">Phone *</label>
-                <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 0612345678" /></div>
+                <Input type="tel" inputMode="numeric" maxLength={10} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 0612345678" /></div>
             </div>
             <div><label className="text-sm font-medium mb-1 block">Nationality</label>
-              <Input value={form.nationality} onChange={e => setForm({ ...form, nationality: e.target.value })} placeholder="e.g. Somali" /></div>
+              <Input validate="text" value={form.nationality} onChange={e => setForm({ ...form, nationality: e.target.value })} placeholder="e.g. Somali" /></div>
             <div>
               <label className="text-sm font-medium mb-1 block">Job Title *</label>
               <Select value={form.jobTitle} onValueChange={v => setForm({ ...form, jobTitle: v })}>

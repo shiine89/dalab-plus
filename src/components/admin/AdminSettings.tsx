@@ -227,13 +227,13 @@ const AdminSettings = ({ business, onUpdate }: AdminSettingsProps) => {
             <Input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
           )}
           {renderField("Phone", false,
-            <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+            <Input type="tel" inputMode="numeric" maxLength={10} value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
           )}
           {renderField("Address", false,
             <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} />
           )}
           {renderField("City", false,
-            <Input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} />
+            <Input validate="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} />
           )}
         </div>
       </motion.div>

@@ -165,7 +165,7 @@ const HomePageEditorTab = ({ businesses, onUpdated }: HomePageEditorTabProps) =>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">Customer Name</Label>
-                <Input value={homePageData.testimonialName || ""} onChange={e => updateField("testimonialName", e.target.value)} placeholder="Sarah Jenkins" />
+                <Input validate="text" value={homePageData.testimonialName || ""} onChange={e => updateField("testimonialName", e.target.value)} placeholder="Sarah Jenkins" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">Customer Title</Label>

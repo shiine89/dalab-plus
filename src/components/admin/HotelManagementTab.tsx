@@ -655,12 +655,12 @@ const HotelManagementTab = ({ businessId, initialView = "overview" }: HotelManag
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-xs mb-1 block">Guest Name *</Label><Input value={bookingForm.guestName} onChange={e => setBookingForm({ ...bookingForm, guestName: e.target.value })} placeholder="Full name" /></div>
-              <div><Label className="text-xs mb-1 block">Phone *</Label><Input value={bookingForm.guestPhone} onChange={e => setBookingForm({ ...bookingForm, guestPhone: e.target.value })} placeholder="+252..." /></div>
+              <div><Label className="text-xs mb-1 block">Guest Name *</Label><Input validate="text" value={bookingForm.guestName} onChange={e => setBookingForm({ ...bookingForm, guestName: e.target.value })} placeholder="Full name" /></div>
+              <div><Label className="text-xs mb-1 block">Phone *</Label><Input type="tel" inputMode="numeric" maxLength={12} value={bookingForm.guestPhone} onChange={e => setBookingForm({ ...bookingForm, guestPhone: e.target.value })} placeholder="252..." /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label className="text-xs mb-1 block">Email</Label><Input type="email" value={bookingForm.guestEmail} onChange={e => setBookingForm({ ...bookingForm, guestEmail: e.target.value })} /></div>
-              <div><Label className="text-xs mb-1 block">Nationality</Label><Input value={bookingForm.guestNationality} onChange={e => setBookingForm({ ...bookingForm, guestNationality: e.target.value })} /></div>
+              <div><Label className="text-xs mb-1 block">Nationality</Label><Input validate="text" value={bookingForm.guestNationality} onChange={e => setBookingForm({ ...bookingForm, guestNationality: e.target.value })} /></div>
             </div>
             <div><Label className="text-xs mb-1 block">ID / Passport Number</Label><Input value={bookingForm.idNumber} onChange={e => setBookingForm({ ...bookingForm, idNumber: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">

@@ -662,7 +662,7 @@ const CashierDashboard = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="text-xs font-medium mb-1 block">{t.csCustomerName}</label>
-                        <Input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder={t.csCustomerName} className="h-9 text-sm" />
+                        <Input validate="text" value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder={t.csCustomerName} className="h-9 text-sm" />
                       </div>
                       <div>
                         <label className="text-xs font-medium mb-1 block">{t.csTable}</label>

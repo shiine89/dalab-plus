@@ -31,6 +31,9 @@ const CustomerRegister = () => {
   const [business, setBusiness] = useState<Business | null>(null);
   const [customerShortId, setCustomerShortId] = useState<string>("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [mode, setMode] = useState<"register" | "login">("register");
+  const [idInput, setIdInput] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   useEffect(() => {
     const load = async () => {

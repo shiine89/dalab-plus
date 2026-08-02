@@ -74,6 +74,52 @@ const CustomerRegister = () => {
   // Bilingual helpers
   const l = (so: string, en: string) => lang === "so" ? so : en;
 
+  const handleIdLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const shortId = parseInt(idInput, 10);
+    if (!shortId) return;
+    setIsSubmitting(true);
+    setLoginError("");
+
+    const { data } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("business_id", businessId)
+      .eq("short_id", shortId)
+      .maybeSingle();
+
+    setIsSubmitting(false);
+
+    if (!data) {
+      setLoginError(l("ID-gan lama helin. Fadlan hubi ama iska diiwaan geli.", "This ID was not found. Please check it or register."));
+      return;
+    }
+
+    const points = data.loyalty_points || 0;
+    const customer = {
+      id: data.id,
+      name: data.name,
+      phone: data.phone || "",
+      tableId,
+      businessId,
+      businessName,
+      businessLogo,
+      points,
+      level: points >= 600 ? "Platinum" : points >= 300 ? "Gold" : points >= 100 ? "Silver" : "Bronze",
+      totalOrders: data.total_orders || 0,
+      totalSpent: Number(data.total_spent) || 0,
+      shortId: data.short_id,
+      registeredAt: data.registered_at || new Date().toISOString(),
+    };
+
+    localStorage.setItem("dp_customer", JSON.stringify(customer));
+    localStorage.setItem("dp_customer_branding", JSON.stringify({ businessId, businessName, businessLogo }));
+    setFormData({ name: data.name, phone: data.phone || "" });
+    setCustomerShortId(String(data.short_id));
+    setShowSuccess(true);
+    setTimeout(() => navigate(`/menu?table=${tableId}&business=${businessId}`), 1600);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) return;

@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { printReceipt } from "@/lib/printReceipt";
 import { useI18n } from "@/lib/i18n";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 interface Notification {
   id: string;
@@ -64,6 +64,7 @@ const CashierDashboard = () => {
   // Payment dialog
   const [paymentDialog, setPaymentDialog] = useState<Order | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | "mobile">("cash");
+  const [mobileProviderId, setMobileProviderId] = useState<string>("");
   const [paidAmount, setPaidAmount] = useState("");
 
   // Refund dialog
@@ -189,8 +190,15 @@ const CashierDashboard = () => {
     await refresh();
   };
 
+  const mobileProviders = business?.paymentMethods?.mobileProviders || [];
+  const selectedProvider = mobileProviders.find(p => p.id === mobileProviderId);
+
   const handlePayment = async () => {
     if (!paymentDialog) return;
+    if (paymentMethod === "mobile" && mobileProviders.length > 0 && !selectedProvider) {
+      toast.error("Select a mobile money account");
+      return;
+    }
     await updateOrder(paymentDialog.id, {
       status: "paid",
       paymentMethod,
@@ -204,10 +212,12 @@ const CashierDashboard = () => {
         business,
         servedBy: cashier?.name,
         paidAmount: Number(paidAmount) || paymentDialog.total,
+        mobileProvider: selectedProvider ? `${selectedProvider.name} · ${selectedProvider.accountNumber}` : undefined,
       });
     }
     setPaymentDialog(null);
     setPaidAmount("");
+    setMobileProviderId("");
     await refresh();
   };
 
@@ -976,7 +986,7 @@ const CashierDashboard = () => {
                       o.paymentMethod || "—",
                       o.status,
                     ]);
-                    (doc as any).autoTable({ startY: 56, head: [headers], body: rows, styles: { fontSize: 8 }, headStyles: { fillColor: [41, 128, 85], textColor: 255 } });
+                    autoTable(doc, { startY: 56, head: [headers], body: rows, styles: { fontSize: 8 }, headStyles: { fillColor: [41, 128, 85], textColor: 255 } });
                     doc.save(`${cashier.name.replace(/\s+/g, "_")}_shift_report_${new Date().toISOString().slice(0, 10)}.pdf`);
                     toast.success("PDF exported ✓");
                   }}>
@@ -1115,6 +1125,28 @@ const CashierDashboard = () => {
                 ))}
               </div>
             </div>
+            {paymentMethod === "mobile" && (
+              <div>
+                <label className="text-sm font-medium mb-2 block">📱 Mobile Money Account</label>
+                {mobileProviders.length === 0 ? (
+                  <p className="text-xs text-muted-foreground bg-muted/40 rounded-lg p-3">
+                    No mobile money providers configured for this business.
+                  </p>
+                ) : (
+                  <div className="grid gap-2">
+                    {mobileProviders.map(p => (
+                      <button key={p.id} onClick={() => setMobileProviderId(p.id)}
+                        className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left transition-all ${
+                          mobileProviderId === p.id ? "border-accent bg-accent/10 shadow-gold" : "border-border hover:border-accent/50"
+                        }`}>
+                        <span className="text-sm font-medium">{p.name}</span>
+                        <span className="text-xs font-mono text-muted-foreground">{p.accountNumber}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div>
               <label className="text-sm font-medium mb-1 block">{t.csAmountPaid}</label>
               <Input type="number" value={paidAmount} onChange={e => setPaidAmount(e.target.value)} placeholder="0.00" />

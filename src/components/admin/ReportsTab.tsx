@@ -5,7 +5,7 @@ import { Order, MenuItem, Category, StaffMember, getStaff } from "@/lib/store";
 import { DollarSign, ShoppingBag, TrendingUp, ArrowUpRight, Package, Layers, Users, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 interface ReportsTabProps {
   orders: Order[];
@@ -61,7 +61,7 @@ const exportToPDF = (title: string, headers: string[], rows: (string | number)[]
   yPos += 8;
 
   // Table
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: yPos,
     head: [headers],
     body: rows,

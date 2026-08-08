@@ -41,9 +41,10 @@ interface PrintReceiptOptions {
   business: Business;
   servedBy?: string;
   paidAmount?: number;
+  mobileProvider?: string;
 }
 
-export const printReceipt = ({ order, business, servedBy, paidAmount = 0 }: PrintReceiptOptions) => {
+export const printReceipt = ({ order, business, servedBy, paidAmount = 0, mobileProvider }: PrintReceiptOptions) => {
   const config = getReceiptConfig(business.id);
   const receiptNumber = Math.floor(Math.random() * 90000) + 10000;
   const subtotal = order.total;
@@ -274,6 +275,12 @@ export const printReceipt = ({ order, business, servedBy, paidAmount = 0 }: Prin
           <span>VAT @ ${config.vatRate}%:</span>
           <span>${vatAmount.toFixed(2)}</span>
         </div>
+        ${mobileProvider ? `
+          <div class="total-row">
+            <span>Mobile Money:</span>
+            <span>${mobileProvider}</span>
+          </div>
+        ` : ""}
         <div class="total-row">
           <span>Paid Amount:</span>
           <span>${paidAmount.toFixed(2)}</span>

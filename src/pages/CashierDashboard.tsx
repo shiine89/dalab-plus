@@ -196,7 +196,7 @@ const CashierDashboard = () => {
   const handlePayment = async () => {
     if (!paymentDialog) return;
     if (paymentMethod === "mobile" && mobileProviders.length > 0 && !selectedProvider) {
-      toast.error(t.csSelectProvider || "Select a mobile money provider");
+      toast.error("Select a mobile money account");
       return;
     }
     await updateOrder(paymentDialog.id, {

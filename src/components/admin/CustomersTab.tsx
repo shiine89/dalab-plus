@@ -10,7 +10,7 @@ import {
 import { Customer, getCustomers, Order, getOrders } from "@/lib/store";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 interface CustomersTabProps {
   businessId: string;
@@ -116,7 +116,7 @@ const CustomersTab = ({ businessId }: CustomersTabProps) => {
       c.name, c.phone || "—", c.totalOrders,
       `$${c.totalSpent.toFixed(2)}`, new Date(c.lastOrder).toLocaleDateString(),
     ]);
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: yPos, head: [headers], body: rows,
       styles: { fontSize: 9 },
       headStyles: { fillColor: [41, 128, 85], textColor: 255 },

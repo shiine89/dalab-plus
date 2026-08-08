@@ -16,7 +16,7 @@ import {
 import { StaffMember, getStaff, saveStaff, updateStaff, deleteStaff, generateId, setCredentialPassword } from "@/lib/store";
 import { toast } from "sonner";
 
-const JOB_TITLES = ["Waiter", "Hotel Manager", "Hotel Manager", "Chef", "Cashier", "Manager", "Cleaner", "Security", "Other"];
+const JOB_TITLES = ["Waiter", "Hotel Manager", "Chef", "Cashier", "Manager", "Cleaner", "Security", "Other"];
 const SHIFTS = ["Morning", "Afternoon", "Evening", "Night", "Full Day"];
 
 interface StaffTabProps {

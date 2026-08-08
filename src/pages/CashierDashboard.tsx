@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { printReceipt } from "@/lib/printReceipt";
 import { useI18n } from "@/lib/i18n";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 interface Notification {
   id: string;
@@ -976,7 +976,7 @@ const CashierDashboard = () => {
                       o.paymentMethod || "—",
                       o.status,
                     ]);
-                    (doc as any).autoTable({ startY: 56, head: [headers], body: rows, styles: { fontSize: 8 }, headStyles: { fillColor: [41, 128, 85], textColor: 255 } });
+                    autoTable(doc, { startY: 56, head: [headers], body: rows, styles: { fontSize: 8 }, headStyles: { fillColor: [41, 128, 85], textColor: 255 } });
                     doc.save(`${cashier.name.replace(/\s+/g, "_")}_shift_report_${new Date().toISOString().slice(0, 10)}.pdf`);
                     toast.success("PDF exported ✓");
                   }}>

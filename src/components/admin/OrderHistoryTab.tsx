@@ -16,7 +16,7 @@ import {
 import { Order, getOrders, getBusinesses } from "@/lib/store";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 import { printReceipt } from "@/lib/printReceipt";
 
 interface OrderHistoryTabProps {
@@ -115,7 +115,7 @@ const OrderHistoryTab = ({ businessId }: OrderHistoryTabProps) => {
       new Date(o.createdAt).toLocaleDateString(),
     ]);
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: yPos,
       head: [headers],
       body: rows,

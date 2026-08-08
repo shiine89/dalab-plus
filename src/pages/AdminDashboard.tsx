@@ -31,7 +31,7 @@ import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { Textarea } from "@/components/ui/textarea";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 import { format } from "date-fns";
 
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -548,7 +548,7 @@ const AdminDashboard = () => {
       ];
     });
 
-    (doc as any).autoTable({
+    autoTable(doc, {
       startY: yPos,
       head: [headers],
       body: rows,

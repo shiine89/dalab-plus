@@ -40,6 +40,8 @@ import AdminRevenueChart from "@/components/admin/AdminRevenueChart";
 import PopularItems from "@/components/admin/PopularItems";
 import AdminSettings from "@/components/admin/AdminSettings";
 import LoyaltyTab from "@/components/admin/LoyaltyTab";
+import InventoryTab from "@/components/admin/InventoryTab";
+import AccountingTab from "@/components/admin/AccountingTab";
 import ReportsTab from "@/components/admin/ReportsTab";
 import StaffTab from "@/components/admin/StaffTab";
 import CustomersTab from "@/components/admin/CustomersTab";
@@ -1148,6 +1150,12 @@ const AdminDashboard = () => {
       case "loyalty":
         return <LoyaltyTab businessId={business.id} />;
 
+      case "inventory":
+        return <InventoryTab business={business} />;
+
+      case "accounting":
+        return <AccountingTab business={business} />;
+
       case "reports":
       case "reports-sales":
       case "reports-items":
@@ -1220,6 +1228,8 @@ const AdminDashboard = () => {
     "order-history": t.adOrderHistory,
     qr: t.adQrCodes,
     "payment-methods": t.adPaymentMethods,
+    inventory: "Inventory",
+    accounting: "General Accounts",
     staff: t.adStaff,
     customers: t.adCustomers,
     loyalty: t.adLoyalty,
@@ -1274,7 +1284,7 @@ const AdminDashboard = () => {
                 const iconMap: Record<string, any> = {
                   dashboard: LayoutDashboard, home: LayoutDashboard, menu: UtensilsCrossed, "admin-order": Package,
                   tables: Grid3X3, qr: QrCode, orders: ClipboardList, "order-history": History,
-                  staff: UserCog, customers: Users, loyalty: Heart, "payment-methods": Wallet,
+                  staff: UserCog, customers: Users, loyalty: Heart, "payment-methods": Wallet, inventory: Boxes, accounting: Landmark,
                   settings: Settings, "receipt-settings": Receipt, reports: LayoutDashboard,
                   hotel: LayoutDashboard,
                 };

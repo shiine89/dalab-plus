@@ -6,7 +6,7 @@ import {
   ChevronLeft, ChevronRight, Users, UserCheck,
   DollarSign, Package, Layers, UserCog, Hotel,
   BedDouble, CalendarCheck, BookOpen, Contact, History, Receipt,
-  Wallet, Lock, Globe,
+  Wallet, Lock, Globe, Boxes, Landmark,
 } from "lucide-react";
 import { Business, getDefaultPermissions } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
@@ -38,6 +38,8 @@ const AdminSidebar = ({ business, activeTab, setActiveTab, collapsed, setCollaps
     { id: "customers", label: t.adCustomers, icon: Users },
     { id: "loyalty", label: t.adLoyalty, icon: Heart },
     { id: "payment-methods", label: t.adPaymentMethods, icon: Wallet },
+    { id: "inventory", label: "Inventory", icon: Boxes },
+    { id: "accounting", label: "General Accounts", icon: Landmark },
     {
       id: "reports", label: t.adReports, icon: BarChart3,
       children: [
@@ -77,6 +79,7 @@ const AdminSidebar = ({ business, activeTab, setActiveTab, collapsed, setCollaps
     if (item.id === "tables" || item.id === "qr") return perms.canManageTables;
     if (item.id === "loyalty") return perms.canManageLoyalty;
     if (item.id === "payment-methods") return perms.canViewPayments;
+    if (item.id === "accounting") return perms.canViewReports;
     if (item.id === "reports") return perms.canViewReports;
     return true;
   });

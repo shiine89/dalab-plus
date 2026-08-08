@@ -38,6 +38,31 @@ const LEVEL_COLORS = [
   "bg-purple-500/15 text-purple-600 border-purple-500/30",
 ];
 
+export interface LoyaltyRedemption {
+  id: string;
+  businessId: string;
+  memberId: string;
+  memberName: string;
+  rewardName: string;
+  pointsUsed: number;
+  redeemedAt: string;
+  auto: boolean;
+}
+
+const getRedemptions = (businessId: string): LoyaltyRedemption[] => {
+  const all: LoyaltyRedemption[] = JSON.parse(localStorage.getItem("dp_loyalty_redemptions") || "[]");
+  return all.filter(r => r.businessId === businessId);
+};
+const addRedemption = (r: LoyaltyRedemption) => {
+  const all: LoyaltyRedemption[] = JSON.parse(localStorage.getItem("dp_loyalty_redemptions") || "[]");
+  all.push(r);
+  localStorage.setItem("dp_loyalty_redemptions", JSON.stringify(all));
+};
+const getAutoRedeem = (businessId: string): boolean =>
+  localStorage.getItem(`dp_loyalty_auto_${businessId}`) !== "off";
+const setAutoRedeemFlag = (businessId: string, on: boolean) =>
+  localStorage.setItem(`dp_loyalty_auto_${businessId}`, on ? "on" : "off");
+
 const getLevel = (points: number, levels: LoyaltyLevelConfig[]) => levels.find(l => points >= l.min && points <= l.max) || levels[0];
 
 // Members storage
@@ -102,6 +127,10 @@ const LoyaltyTab = ({ businessId }: LoyaltyTabProps) => {
   const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
   const [rewardForm, setRewardForm] = useState({ name: "", description: "", pointsCost: "", icon: "🎁" });
 
+  // Auto redeem
+  const [autoRedeem, setAutoRedeem] = useState(true);
+  const [redemptions, setRedemptions] = useState<LoyaltyRedemption[]>([]);
+
   // Level editing
   const [levelDialog, setLevelDialog] = useState(false);
   const [editLevels, setEditLevels] = useState<LoyaltyLevelConfig[]>([]);
@@ -112,7 +141,45 @@ const LoyaltyTab = ({ businessId }: LoyaltyTabProps) => {
     setRewards(getLoyaltyRewards(businessId));
     setOrders(await getOrders(businessId));
     setLevels(await getLoyaltyLevels(businessId));
+    setAutoRedeem(getAutoRedeem(businessId));
+    setRedemptions(getRedemptions(businessId));
   };
+
+  /** Automatically redeems the best affordable reward for every member. */
+  const runAutoRedeem = (silent = false) => {
+    const activeRewards = getLoyaltyRewards(businessId).filter(r => r.active).sort((a, b) => b.pointsCost - a.pointsCost);
+    if (activeRewards.length === 0) { if (!silent) toast.info("No active rewards to redeem"); return; }
+    const list = getLoyaltyMembers(businessId);
+    let count = 0;
+    list.forEach(m => {
+      let points = m.points;
+      let guard = 0;
+      while (guard++ < 20) {
+        const reward = activeRewards.find(r => r.pointsCost > 0 && points >= r.pointsCost);
+        if (!reward) break;
+        points -= reward.pointsCost;
+        addRedemption({
+          id: generateId("rdm"), businessId, memberId: m.id, memberName: m.name,
+          rewardName: reward.name, pointsUsed: reward.pointsCost, redeemedAt: new Date().toISOString(), auto: true,
+        });
+        count++;
+      }
+      if (points !== m.points) updateLoyaltyMember(m.id, { points });
+    });
+    if (count > 0) {
+      toast.success(`${count} reward${count > 1 ? "s" : ""} auto-redeemed 🎁`);
+      setMembers(getLoyaltyMembers(businessId));
+      setRedemptions(getRedemptions(businessId));
+    } else if (!silent) {
+      toast.info("No member has enough points yet");
+    }
+  };
+
+  useEffect(() => {
+    if (!autoRedeem || members.length === 0 || rewards.length === 0) return;
+    runAutoRedeem(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRedeem, members.length, rewards.length]);
 
   const getMemberOrders = (memberName: string, memberPhone: string) => {
     return orders.filter(o => {
@@ -366,6 +433,39 @@ const LoyaltyTab = ({ businessId }: LoyaltyTabProps) => {
 
         {/* Rewards Tab */}
         <TabsContent value="rewards">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-accent/15 flex items-center justify-center shrink-0">
+                <Award className="w-4 h-4 text-accent" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-sm">Automatic Reward Redemption</p>
+                <p className="text-xs text-muted-foreground">
+                  When a member reaches the required points, the reward is redeemed automatically and points are deducted.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => runAutoRedeem(false)}>Run now</Button>
+              <Switch checked={autoRedeem} onCheckedChange={v => { setAutoRedeem(v); setAutoRedeemFlag(businessId, v); }} />
+            </div>
+          </motion.div>
+
+          {redemptions.length > 0 && (
+            <div className="bg-card border border-border rounded-xl p-4 mb-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Recent Redemptions</p>
+              <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                {redemptions.slice().reverse().slice(0, 12).map(r => (
+                  <div key={r.id} className="flex items-center justify-between text-xs bg-muted/30 rounded-lg px-3 py-2">
+                    <span className="font-medium">{r.memberName} · {r.rewardName}</span>
+                    <span className="text-muted-foreground">−{r.pointsUsed} pts · {new Date(r.redeemedAt).toLocaleDateString()}{r.auto ? " · auto" : ""}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end mb-4">
             <Button onClick={() => openRewardDialog()} variant="hero">
               <Plus className="w-4 h-4 mr-1" /> Add Reward

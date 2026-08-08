@@ -207,6 +207,50 @@ export type Database = {
           },
         ]
       }
+      expenses: {
+        Row: {
+          amount: number
+          business_id: string
+          category: string | null
+          created_at: string
+          department: string
+          id: string
+          note: string | null
+          spent_at: string
+          title: string
+        }
+        Insert: {
+          amount?: number
+          business_id: string
+          category?: string | null
+          created_at?: string
+          department?: string
+          id?: string
+          note?: string | null
+          spent_at?: string
+          title: string
+        }
+        Update: {
+          amount?: number
+          business_id?: string
+          category?: string | null
+          created_at?: string
+          department?: string
+          id?: string
+          note?: string | null
+          spent_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hotel_bookings: {
         Row: {
           business_id: string
@@ -328,6 +372,65 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "hotel_rooms_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_items: {
+        Row: {
+          business_id: string
+          category: string | null
+          cost_price: number
+          created_at: string
+          department: string
+          id: string
+          name: string
+          quantity: number
+          reorder_level: number
+          sell_price: number
+          sku: string | null
+          supplier: string | null
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          category?: string | null
+          cost_price?: number
+          created_at?: string
+          department?: string
+          id?: string
+          name: string
+          quantity?: number
+          reorder_level?: number
+          sell_price?: number
+          sku?: string | null
+          supplier?: string | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          category?: string | null
+          cost_price?: number
+          created_at?: string
+          department?: string
+          id?: string
+          name?: string
+          quantity?: number
+          reorder_level?: number
+          sell_price?: number
+          sku?: string | null
+          supplier?: string | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_items_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
@@ -550,6 +653,69 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchases: {
+        Row: {
+          business_id: string
+          created_at: string
+          department: string
+          id: string
+          item_id: string | null
+          item_name: string
+          note: string | null
+          payment_method: string | null
+          purchased_at: string
+          quantity: number
+          supplier: string | null
+          total_cost: number
+          unit_cost: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          department?: string
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          note?: string | null
+          payment_method?: string | null
+          purchased_at?: string
+          quantity?: number
+          supplier?: string | null
+          total_cost?: number
+          unit_cost?: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          department?: string
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          note?: string | null
+          payment_method?: string | null
+          purchased_at?: string
+          quantity?: number
+          supplier?: string | null
+          total_cost?: number
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
             referencedColumns: ["id"]
           },
         ]

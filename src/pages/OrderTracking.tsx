@@ -209,7 +209,68 @@ const OrderTracking = () => {
           </motion.div>
         )}
 
-        {isAccepted && (
+        <AnimatePresence>
+          {currentStep === statusSteps.length - 1 && !deliveredAck && (
+            <motion.div
+              key="delivered-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center px-5 bg-primary/70 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 220, damping: 20 }}
+                className="glass rounded-3xl p-7 text-center max-w-sm w-full border border-accent/25 relative overflow-hidden"
+              >
+                <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-accent/15 blur-3xl" />
+                <motion.div
+                  animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.08, 1] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-20 h-20 rounded-3xl bg-gold-gradient shadow-gold mx-auto mb-5 flex items-center justify-center relative"
+                >
+                  <span className="text-4xl">⏳</span>
+                </motion.div>
+                <h3 className="font-display font-bold text-primary-foreground text-xl mb-2 relative">
+                  {l("Fadlan sug daqiiqado yar ⏳", "Please wait a few minutes ⏳")}
+                </h3>
+                <p className="text-xs text-primary-foreground/50 leading-relaxed relative">
+                  {l(
+                    "Dalabkaagu wuu diyaar yahay waana la keenayaa. Waan kugu mahadcelinaynaa sugitaankaaga.",
+                    "Your order is on its final step and is being delivered. Thanks for your patience."
+                  )}
+                </p>
+                <motion.div
+                  className="flex gap-1.5 mt-5 max-w-[180px] mx-auto relative"
+                >
+                  {[0, 1, 2, 3].map(i => (
+                    <motion.div
+                      key={i}
+                      className="h-1.5 flex-1 rounded-full bg-accent/25"
+                      animate={{ opacity: [0.25, 1, 0.25] }}
+                      transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.2 }}
+                    />
+                  ))}
+                </motion.div>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="w-full rounded-2xl mt-6 relative"
+                  onClick={() => {
+                    if (orderId) localStorage.setItem(`dp_delivered_ack_${orderId}`, "1");
+                    setDeliveredAck(true);
+                  }}
+                >
+                  OK
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {isAccepted && !deliveredAck && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

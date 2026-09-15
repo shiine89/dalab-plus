@@ -350,6 +350,26 @@ const OrderTracking = () => {
           </motion.div>
         )}
 
+        {deliveredAck && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="glass rounded-2xl p-6 text-center border border-accent/20"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-accent/15 mx-auto mb-3 flex items-center justify-center">
+              <CheckCircle className="w-7 h-7 text-accent" />
+            </div>
+            <h3 className="font-display font-bold text-primary-foreground text-base">
+              {l("La keenay 🎉", "Delivered 🎉")}
+            </h3>
+            <p className="text-xs text-primary-foreground/45 mt-1">
+              {l("Cunto wanaagsan!", "Enjoy your meal!")}
+            </p>
+          </motion.div>
+        )}
+
+
         {/* Order Items */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

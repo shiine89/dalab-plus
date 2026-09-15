@@ -22,6 +22,12 @@ const OrderTracking = () => {
   const [order, setOrder] = useState<any>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [showReward, setShowReward] = useState(false);
+  const [deliveredAck, setDeliveredAck] = useState(false);
+
+  useEffect(() => {
+    if (!orderId) return;
+    setDeliveredAck(localStorage.getItem(`dp_delivered_ack_${orderId}`) === "1");
+  }, [orderId]);
 
   useEffect(() => {
     const stored = localStorage.getItem("dp_customer");

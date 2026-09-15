@@ -22,6 +22,12 @@ const OrderTracking = () => {
   const [order, setOrder] = useState<any>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [showReward, setShowReward] = useState(false);
+  const [deliveredAck, setDeliveredAck] = useState(false);
+
+  useEffect(() => {
+    if (!orderId) return;
+    setDeliveredAck(localStorage.getItem(`dp_delivered_ack_${orderId}`) === "1");
+  }, [orderId]);
 
   useEffect(() => {
     const stored = localStorage.getItem("dp_customer");
@@ -203,7 +209,68 @@ const OrderTracking = () => {
           </motion.div>
         )}
 
-        {isAccepted && (
+        <AnimatePresence>
+          {currentStep === statusSteps.length - 1 && !deliveredAck && (
+            <motion.div
+              key="delivered-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center px-5 bg-primary/70 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 220, damping: 20 }}
+                className="glass rounded-3xl p-7 text-center max-w-sm w-full border border-accent/25 relative overflow-hidden"
+              >
+                <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-accent/15 blur-3xl" />
+                <motion.div
+                  animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.08, 1] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-20 h-20 rounded-3xl bg-gold-gradient shadow-gold mx-auto mb-5 flex items-center justify-center relative"
+                >
+                  <span className="text-4xl">⏳</span>
+                </motion.div>
+                <h3 className="font-display font-bold text-primary-foreground text-xl mb-2 relative">
+                  {l("Fadlan sug daqiiqado yar ⏳", "Please wait a few minutes ⏳")}
+                </h3>
+                <p className="text-xs text-primary-foreground/50 leading-relaxed relative">
+                  {l(
+                    "Dalabkaagu wuu diyaar yahay waana la keenayaa. Waan kugu mahadcelinaynaa sugitaankaaga.",
+                    "Your order is on its final step and is being delivered. Thanks for your patience."
+                  )}
+                </p>
+                <motion.div
+                  className="flex gap-1.5 mt-5 max-w-[180px] mx-auto relative"
+                >
+                  {[0, 1, 2, 3].map(i => (
+                    <motion.div
+                      key={i}
+                      className="h-1.5 flex-1 rounded-full bg-accent/25"
+                      animate={{ opacity: [0.25, 1, 0.25] }}
+                      transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.2 }}
+                    />
+                  ))}
+                </motion.div>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="w-full rounded-2xl mt-6 relative"
+                  onClick={() => {
+                    if (orderId) localStorage.setItem(`dp_delivered_ack_${orderId}`, "1");
+                    setDeliveredAck(true);
+                  }}
+                >
+                  OK
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {isAccepted && !deliveredAck && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -282,6 +349,26 @@ const OrderTracking = () => {
             </div>
           </motion.div>
         )}
+
+        {deliveredAck && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="glass rounded-2xl p-6 text-center border border-accent/20"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-accent/15 mx-auto mb-3 flex items-center justify-center">
+              <CheckCircle className="w-7 h-7 text-accent" />
+            </div>
+            <h3 className="font-display font-bold text-primary-foreground text-base">
+              {l("La keenay 🎉", "Delivered 🎉")}
+            </h3>
+            <p className="text-xs text-primary-foreground/45 mt-1">
+              {l("Cunto wanaagsan!", "Enjoy your meal!")}
+            </p>
+          </motion.div>
+        )}
+
 
         {/* Order Items */}
         <motion.div
